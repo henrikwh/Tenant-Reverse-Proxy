@@ -1,0 +1,34 @@
+{
+    "ReverseProxy": {
+        "Routes": {
+            "test": {
+                "ClusterId": "testcluster",
+                "AuthorizationPolicy": "customPolicy",
+                "Match": {
+                    "Path": "/test/{**remainder}"
+                },
+                "Transforms": [
+                    {
+                        "PathRemovePrefix": "/test"
+                    },
+                    {
+                        "RequestHeadersCopy": "true"
+                    },
+                    {
+                        "RequestHeaderOriginalHost": "true"
+                    }
+                ]
+            }
+        },
+        "Clusters": {
+            "testcluster": {
+                "Destinations": {
+                    "destination1": {
+                        "Address": "https://localhost:7297"
+                    }
+                }
+            }
+        }
+    }
+}
+    

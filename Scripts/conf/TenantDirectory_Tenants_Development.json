@@ -1,0 +1,8 @@
+[
+    {
+        "Tid": "TBD",
+        "Destination": "https://localhost:9090",
+        "Alias": "Test",
+        "State": "Enabled"
+    }
+]

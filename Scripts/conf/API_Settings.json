@@ -1,0 +1,19 @@
+{
+  "Logging": {
+    "IncludeScopes": true,
+    "LogLevel": {
+      "Default": "Trace",
+      "Microsoft.AspNetCore": "Warning"
+    },
+    "ApplicationInsights": {
+      "IncludeScopes": true,
+      "LogLevel": {
+        "Microsoft": "Warning",
+        "Azure.Data.Tables": "Information",
+        "WebApi" : "Trace",
+        "WeatherApi": "Trace",
+        "Shared": "Trace"
+      }
+    }
+  }
+}

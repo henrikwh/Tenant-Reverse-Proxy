@@ -1,0 +1,1532 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.18.4.5664",
+      "templateHash": "9959076776160475113"
+    }
+  },
+  "parameters": {
+    "skuSize": {
+      "type": "string",
+      "defaultValue": "S1",
+      "allowedValues": [
+        "S1",
+        "F1"
+      ],
+      "metadata": {
+        "description": "SKU size"
+      }
+    },
+    "location": {
+      "type": "string"
+    },
+    "secret": {
+      "type": "securestring"
+    },
+    "keyValueNames": {
+      "type": "array",
+      "defaultValue": [
+        "API:Settings",
+        "API:Settings$Development",
+        "API:Settings$Production",
+        "ReverseProxy:Settings",
+        "ReverseProxy:Settings$Development",
+        "ReverseProxy:Settings$Production",
+        "TenantDirectory:Tenants$Development",
+        "TenantDirectory:Tenants$Production",
+        "Generel"
+      ],
+      "metadata": {
+        "description": "Specifies the names of the key-value resources. The name is a combination of key and label with $ as delimiter. The label is optional."
+      }
+    },
+    "keyValueValues": {
+      "type": "array",
+      "defaultValue": [
+        "[variables('$fxv#2')]",
+        "[variables('$fxv#3')]",
+        "[variables('$fxv#4')]",
+        "[variables('$fxv#5')]",
+        "[variables('$fxv#6')]",
+        "[variables('$fxv#7')]",
+        "[variables('$fxv#8')]",
+        "[variables('$fxv#9')]",
+        "[variables('$fxv#10')]"
+      ],
+      "metadata": {
+        "description": "Array holding settings to be loaded into app confiuration"
+      }
+    },
+    "sku": {
+      "type": "string",
+      "defaultValue": "PerGB2018"
+    }
+  },
+  "variables": {
+    "$fxv#0": {
+      "appConfiguration": {
+        "name": "ProxyConfiguration"
+      },
+      "uamis": {
+        "appconfigDemo": "ProxyConfigurationUAMI"
+      },
+      "website": {
+        "appServiceplan": "ProxyServicePlan",
+        "webapp": "Proxy"
+      },
+      "features": {
+        "magic": {
+          "name": "DoMagic",
+          "default": "false"
+        },
+        "showDebugView": {
+          "name": "ShowDebugView",
+          "default": "true"
+        },
+        "autoUpdateLatestVersionSecrets": {
+          "name": "AutoUpdateLatestVersionSecrets",
+          "default": "true"
+        }
+      },
+      "monitor": {
+        "appinsights": "Appinsights",
+        "logAnalyticsWorkspace": "LogAnalyticsWorkspace"
+      },
+      "serviceBus": {
+        "nameSpace": "ProxyServicebus"
+      },
+      "keyVault": {
+        "name": "kvProxySample"
+      }
+    },
+    "$fxv#1": {
+      "initConfig": {
+        "resourceGroupName": "p1",
+        "subscriptionId": "8b67eac7-bf4f-42d7-9342-4da1ff179460",
+        "location": "westeurope"
+      },
+      "roles": {
+        "Contributor": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+        "App Configuration Data Reader": "516239f1-63e1-4d78-a4de-a74fb236a071",
+        "Key Vault Secrets User": "4633458b-17de-408a-b874-0445c86b69e6",
+        "Key Vault Reader": "21090545-7ca7-4776-b22c-e363652d74d2",
+        "Azure Service Bus Data Receiver": "4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0"
+      },
+      "connectionStrings": {
+        "applicationInsights": "InstrumentationKey=66582357-1502-4365-883b-db521307c695;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/",
+        "serviceBus": "Endpoint=sb://proxyservicebus-ttm3.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=JKYF0/t9HprBSH4S3Lu9tfycYTSMeyxE0+ASbG1dSr8=",
+        "appConfiguration": "Endpoint=https://proxyconfiguration-ttm3.azconfig.io;Id=gEUx;Secret=Hb8g5cnuVxGuqRPSwp7OdEnC/4UJ7KwAK4nvS7JxUz0="
+      },
+      "webappEndpoint": "proxy-ttm3.azurewebsites.net",
+      "webappWeatherEndpoint": "proxy-weather-ttm3.azurewebsites.net"
+    },
+    "$fxv#10": "{\r\n\t\"Jwt\":{\r\n\t\t\"Test\" : \"verylongpwdNottobecracked!andmakeitlongerandlong!!\"\r\n\t}\r\n}",
+    "$fxv#2": "{\r\n  \"Logging\": {\r\n    \"IncludeScopes\": true,\r\n    \"LogLevel\": {\r\n      \"Default\": \"Trace\",\r\n      \"Microsoft.AspNetCore\": \"Warning\"\r\n    },\r\n    \"ApplicationInsights\": {\r\n      \"IncludeScopes\": true,\r\n      \"LogLevel\": {\r\n        \"Microsoft\": \"Warning\",\r\n        \"Azure.Data.Tables\": \"Information\",\r\n        \"WebApi\" : \"Trace\"\r\n      }\r\n    }\r\n  },\r\n  \"DemoSettings\" : {\r\n    \"SomeInteger\" : 1111111,\r\n    \"SomeString\": \"Demo\",\r\n    \"SomeGlobalString\" : \"Global, no tag\"\r\n  }\r\n}",
+    "$fxv#3": "{\r\n    \"Logging\": {\r\n      \"IncludeScopes\": true,\r\n      \"LogLevel\": {\r\n        \"Default\": \"Trace\",\r\n        \"Microsoft.AspNetCore\": \"Warning\"\r\n      },\r\n      \"ApplicationInsights\": {\r\n        \"IncludeScopes\": true,\r\n        \"LogLevel\": {\r\n          \"Microsoft\": \"Warning\",\r\n          \"Microsoft.Azure.AppConfiguration\" :\"Trace\",\r\n          \"Azure.Data.Tables\": \"Information\",\r\n          \"WebApi\" : \"Trace\",\r\n          \"Shared\" : \"Trace\",\r\n          \"Yarp.ReverseProxy\" : \"Trace\"\r\n        }\r\n      }\r\n    },\r\n    \"DemoSettings\" : {\r\n      \"SomeInteger\" : 1111111,\r\n      \"SomeString\": \"DevSettings\"\r\n    }\r\n  }",
+    "$fxv#4": "{\r\n  \"Logging\": {\r\n    \"IncludeScopes\": true,\r\n    \"LogLevel\": {\r\n      \"Default\": \"Information\",\r\n      \"Microsoft.AspNetCore\": \"Warning\",\r\n      \"Proxy\": \"Trace\",\r\n      \"WeatherApi\": \"Trace\",\r\n      \"Shared\": \"Trace\",\r\n      \"Yarp.ReverseProxy\": \"Trace\"\r\n  },\r\n    \"ApplicationInsights\": {\r\n      \"IncludeScopes\": true,\r\n      \"LogLevel\": {\r\n        \"Default\": \"Information\",\r\n        \"Microsoft\": \"Warning\",\r\n        \"Proxy\": \"Trace\",\r\n        \"WeatherApi\": \"Trace\",\r\n        \"Shared\": \"Trace\",\r\n        \"Yarp.ReverseProxy\": \"Trace\"\r\n      }\r\n    }\r\n  }\r\n}",
+    "$fxv#5": "{\r\n    \"ReverseProxy\": {\r\n    }\r\n}\r\n    ",
+    "$fxv#6": "{\r\n    \"ReverseProxy\": {\r\n        \"Routes\": {\r\n            \"test\": {\r\n                \"ClusterId\": \"testcluster\",\r\n                \"AuthorizationPolicy\": \"customPolicy\",\r\n                \"Match\": {\r\n                    \"Path\": \"/test/{**remainder}\"\r\n                },\r\n                \"Transforms\": [\r\n                    {\r\n                        \"PathRemovePrefix\": \"/test\"\r\n                    },\r\n                    {\r\n                        \"RequestHeadersCopy\": \"true\"\r\n                    },\r\n                    {\r\n                        \"RequestHeaderOriginalHost\": \"true\"\r\n                    }\r\n                ]\r\n            }\r\n        },\r\n        \"Clusters\": {\r\n            \"testcluster\": {\r\n                \"Destinations\": {\r\n                    \"destination1\": {\r\n                        \"Address\": \"https://localhost:7297\"\r\n                    }\r\n                }\r\n            }\r\n        }\r\n    }\r\n}\r\n    ",
+    "$fxv#7": "{\r\n    \"ReverseProxy\": {\r\n        \"Routes\": {\r\n            \"test\": {\r\n                \"ClusterId\": \"testcluster\",\r\n                \"AuthorizationPolicy\": \"customPolicy\",\r\n                \"Match\": {\r\n                    \"Path\": \"/test/{**remainder}\"\r\n                },\r\n                \"Transforms\": [\r\n                    {\r\n                        \"PathRemovePrefix\": \"/test\"\r\n                    },\r\n                    {\r\n                        \"RequestHeadersCopy\": \"true\"\r\n                    },\r\n                    {\r\n                        \"RequestHeaderOriginalHost\": \"true\"\r\n                    }\r\n                ]\r\n            }\r\n        },\r\n        \"Clusters\": {\r\n            \"testcluster\": {\r\n                \"Destinations\": {\r\n                    \"destination1\": {\r\n                        \"Address\": \"https://localhost:7297\"\r\n                    }\r\n                }\r\n            }\r\n        }\r\n    }\r\n}\r\n    ",
+    "$fxv#8": "\r\n\r\n    [\r\n        {\r\n            \"Tid\": \"e4df7223-e170-4ae0-93ad-076d478cbe95\",\r\n            \"Dest\": \"https://proxy-weather-ttm3.azurewebsites.net\",\r\n            \"Alias\": \"Henrik\",\r\n            \"tset\" : \"test\"\r\n        }\r\n    ]\r\n",
+    "$fxv#9": "\r\n\r\n[\r\n    {\r\n        \"Tid\": \"e4df7223-e170-4ae0-93ad-076d478cbe95\",\r\n        \"Dest\": \"https://proxy-weather-ttm3.azurewebsites.net\",\r\n        \"Alias\": \"Henrik\",\r\n        \"tset\" : \"test\"\r\n    }\r\n]\r\n",
+    "names": "[variables('$fxv#0')]",
+    "conf": "[variables('$fxv#1')]",
+    "roles": "[variables('conf').roles]",
+    "baseName": "[substring(uniqueString(resourceGroup().id), 0, 4)]",
+    "environments": [
+      "Development",
+      "Test",
+      "Production"
+    ],
+    "serviceBusEndpoint": "[format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.ServiceBus/namespaces', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName'))))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}/{1}', format('{0}-{1}', variables('names').website.webapp, variables('baseName')), 'appsettings')]",
+      "properties": {
+        "ApplicationInsights:ConnectionString": "[reference(resourceId('Microsoft.Insights/components', format('{0}-{1}', variables('names').monitor.appinsights, variables('baseName'))), '2020-02-02').ConnectionString]",
+        "KeyVaultName": "[format('{0}-{1}', variables('names').keyVault.name, variables('baseName'))]",
+        "ASPNETCORE_ENVIRONMENT": "Production",
+        "AppConfiguration:UserAssignedManagedIdentityClientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName'))), '2023-01-31').clientId]",
+        "AppConfiguration:Uri": "[reference(resourceId('Microsoft.AppConfiguration/configurationStores', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName'))), '2023-03-01').endpoint]",
+        "ChangeSubscription:ServiceBusTopic": "sb-appconfigurationChangeTopic",
+        "ChangeSubscription:ServiceBusNamespace": "[reference(resourceId('Microsoft.ServiceBus/namespaces', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName'))), '2021-11-01').serviceBusEndpoint]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Insights/components', format('{0}-{1}', variables('names').monitor.appinsights, variables('baseName')))]",
+        "[resourceId('Microsoft.AppConfiguration/configurationStores', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName')))]",
+        "[resourceId('Microsoft.KeyVault/vaults', format('{0}-{1}', variables('names').keyVault.name, variables('baseName')))]",
+        "[resourceId('Microsoft.ServiceBus/namespaces', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName')))]",
+        "[resourceId('Microsoft.ServiceBus/namespaces/topics', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName')), 'sb-appconfigurationChangeTopic')]",
+        "[resourceId('Microsoft.Web/sites', format('{0}-{1}', variables('names').website.webapp, variables('baseName')))]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}/{1}', format('{0}-{1}', variables('names').website.webapp, variables('baseName')), 'web')]",
+      "properties": {
+        "netFrameworkVersion": "v6.0",
+        "use32BitWorkerProcess": false,
+        "loadBalancing": "PerSiteRoundRobin",
+        "alwaysOn": true,
+        "minTlsVersion": "1.2",
+        "ftpsState": "Disabled"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', format('{0}-{1}', variables('names').website.webapp, variables('baseName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2022-03-01",
+      "name": "[format('{0}/{1}', format('{0}-weather-{1}', variables('names').website.webapp, variables('baseName')), 'appsettings')]",
+      "properties": {
+        "ApplicationInsights:ConnectionString": "[reference(resourceId('Microsoft.Insights/components', format('{0}-{1}', variables('names').monitor.appinsights, variables('baseName'))), '2020-02-02').ConnectionString]",
+        "KeyVaultName": "[format('{0}-{1}', variables('names').keyVault.name, variables('baseName'))]",
+        "ASPNETCORE_ENVIRONMENT": "Production",
+        "AppConfiguration:UserAssignedManagedIdentityClientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName'))), '2023-01-31').clientId]",
+        "AppConfiguration:Uri": "[reference(resourceId('Microsoft.AppConfiguration/configurationStores', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName'))), '2023-03-01').endpoint]",
+        "ChangeSubscription:ServiceBusTopic": "sb-appconfigurationChangeTopic",
+        "ChangeSubscription:ServiceBusNamespace": "[reference(resourceId('Microsoft.ServiceBus/namespaces', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName'))), '2021-11-01').serviceBusEndpoint]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Insights/components', format('{0}-{1}', variables('names').monitor.appinsights, variables('baseName')))]",
+        "[resourceId('Microsoft.AppConfiguration/configurationStores', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName')))]",
+        "[resourceId('Microsoft.KeyVault/vaults', format('{0}-{1}', variables('names').keyVault.name, variables('baseName')))]",
+        "[resourceId('Microsoft.ServiceBus/namespaces', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName')))]",
+        "[resourceId('Microsoft.ServiceBus/namespaces/topics', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName')), 'sb-appconfigurationChangeTopic')]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName')))]",
+        "[resourceId('Microsoft.Web/sites', format('{0}-weather-{1}', variables('names').website.webapp, variables('baseName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2022-03-01",
+      "name": "[format('{0}/{1}', format('{0}-weather-{1}', variables('names').website.webapp, variables('baseName')), 'web')]",
+      "properties": {
+        "netFrameworkVersion": "v6.0",
+        "use32BitWorkerProcess": false,
+        "loadBalancing": "PerSiteRoundRobin",
+        "alwaysOn": true,
+        "minTlsVersion": "1.2",
+        "ftpsState": "Disabled"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', format('{0}-weather-{1}', variables('names').website.webapp, variables('baseName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "name": "[format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName'))]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "name": "[format('controlPlane-{0}', variables('baseName'))]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2022-09-01",
+      "name": "[variables('names').website.appServiceplan]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "size": "[parameters('skuSize')]",
+        "name": "[parameters('skuSize')]",
+        "capacity": 1
+      },
+      "kind": "windows"
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-{1}', variables('names').website.webapp, variables('baseName'))]",
+      "location": "[parameters('location')]",
+      "kind": "app",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('names').website.appServiceplan)]",
+        "clientAffinityEnabled": false
+      },
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName'))))]": {}
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('names').website.appServiceplan)]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2022-03-01",
+      "name": "[format('{0}-weather-{1}', variables('names').website.webapp, variables('baseName'))]",
+      "location": "[parameters('location')]",
+      "kind": "app",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('names').website.appServiceplan)]",
+        "clientAffinityEnabled": false
+      },
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName'))))]": {}
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('names').website.appServiceplan)]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.AppConfiguration/configurationStores",
+      "apiVersion": "2023-03-01",
+      "name": "[format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName'))]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "standard"
+      },
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.AppConfiguration/configurationStores/{0}', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName')))]",
+      "name": "[guid(variables('roles')['App Configuration Data Reader'], resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName'))))]",
+      "properties": {
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roles')['App Configuration Data Reader'])]",
+        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName'))), '2023-01-31').principalId]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.AppConfiguration/configurationStores', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName')))]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName')))]"
+      ]
+    },
+    {
+      "copy": {
+        "name": "featureFlagDoMagic",
+        "count": "[length(variables('environments'))]"
+      },
+      "type": "Microsoft.AppConfiguration/configurationStores/keyValues",
+      "apiVersion": "2023-03-01",
+      "name": "[format('{0}/{1}', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName')), format('.appconfig.featureflag~2F{0}${1}', variables('names').features.magic.name, variables('environments')[copyIndex()]))]",
+      "properties": {
+        "contentType": "application/vnd.microsoft.appconfig.ff+json;charset=utf-8",
+        "tags": {},
+        "value": "[format('{{\"id\": \"{0}\", \"description\": \"\", \"enabled\": {1}, \"conditions\": {{\"client_filters\":[]}}}}', variables('names').features.magic.name, variables('names').features.magic.default)]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.AppConfiguration/configurationStores', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName')))]"
+      ]
+    },
+    {
+      "copy": {
+        "name": "featureFlagShowDebugView",
+        "count": "[length(variables('environments'))]"
+      },
+      "type": "Microsoft.AppConfiguration/configurationStores/keyValues",
+      "apiVersion": "2022-05-01",
+      "name": "[format('{0}/{1}', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName')), format('.appconfig.featureflag~2F{0}${1}', variables('names').features.showDebugView.name, variables('environments')[copyIndex()]))]",
+      "properties": {
+        "contentType": "application/vnd.microsoft.appconfig.ff+json;charset=utf-8",
+        "tags": {},
+        "value": "[format('{{\"id\": \"{0}\", \"description\": \"\", \"enabled\": {1}, \"conditions\": {{\"client_filters\":[]}}}}', variables('names').features.showDebugView.name, variables('names').features.showDebugView.default)]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.AppConfiguration/configurationStores', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName')))]"
+      ]
+    },
+    {
+      "copy": {
+        "name": "featureFlagProcessKeyVaultChangeEvents",
+        "count": "[length(variables('environments'))]"
+      },
+      "type": "Microsoft.AppConfiguration/configurationStores/keyValues",
+      "apiVersion": "2022-05-01",
+      "name": "[format('{0}/{1}', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName')), format('.appconfig.featureflag~2F{0}${1}', variables('names').features.autoUpdateLatestVersionSecrets.name, variables('environments')[copyIndex()]))]",
+      "properties": {
+        "contentType": "application/vnd.microsoft.appconfig.ff+json;charset=utf-8",
+        "tags": {},
+        "value": "[format('{{\"id\": \"{0}\", \"description\": \"\", \"enabled\": {1}, \"conditions\": {{\"client_filters\":[]}}}}', variables('names').features.autoUpdateLatestVersionSecrets.name, variables('names').features.autoUpdateLatestVersionSecrets.default)]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.AppConfiguration/configurationStores', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.ServiceBus/namespaces",
+      "apiVersion": "2021-11-01",
+      "name": "[format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName'))]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard"
+      }
+    },
+    {
+      "type": "Microsoft.ServiceBus/namespaces/topics",
+      "apiVersion": "2021-11-01",
+      "name": "[format('{0}/{1}', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName')), 'sb-appconfigurationChangeTopic')]",
+      "properties": {},
+      "dependsOn": [
+        "[resourceId('Microsoft.ServiceBus/namespaces', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.ServiceBus/namespaces/topics",
+      "apiVersion": "2021-11-01",
+      "name": "[format('{0}/{1}', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName')), 'sb-proxyChangeTopic')]",
+      "properties": {},
+      "dependsOn": [
+        "[resourceId('Microsoft.ServiceBus/namespaces', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.EventGrid/systemTopics",
+      "apiVersion": "2022-06-15",
+      "name": "eg-systemChangeTopic",
+      "location": "[parameters('location')]",
+      "properties": {
+        "source": "[resourceId('Microsoft.AppConfiguration/configurationStores', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName')))]",
+        "topicType": "Microsoft.AppConfiguration.ConfigurationStores"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.AppConfiguration/configurationStores', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.EventGrid/systemTopics",
+      "apiVersion": "2022-06-15",
+      "name": "eg-keyVaultSystemChangeTopic",
+      "location": "[parameters('location')]",
+      "properties": {
+        "source": "[resourceId('Microsoft.KeyVault/vaults', format('{0}-{1}', variables('names').keyVault.name, variables('baseName')))]",
+        "topicType": "Microsoft.KeyVault.Vaults"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', format('{0}-{1}', variables('names').keyVault.name, variables('baseName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.EventGrid/systemTopics/eventSubscriptions",
+      "apiVersion": "2022-06-15",
+      "name": "[format('{0}/{1}', 'eg-keyVaultSystemChangeTopic', 'changeSubscription-kv')]",
+      "properties": {
+        "destination": {
+          "endpointType": "ServiceBusTopic",
+          "properties": {
+            "resourceId": "[resourceId('Microsoft.ServiceBus/namespaces/topics', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName')), 'sb-appconfigurationChangeTopic')]"
+          }
+        },
+        "filter": {
+          "includedEventTypes": [
+            "Microsoft.KeyVault.KeyNewVersionCreated",
+            "Microsoft.KeyVault.KeyNearExpiry",
+            "Microsoft.KeyVault.KeyExpired",
+            "Microsoft.KeyVault.SecretNewVersionCreated",
+            "Microsoft.KeyVault.SecretNearExpiry",
+            "Microsoft.KeyVault.SecretExpired"
+          ]
+        },
+        "eventDeliverySchema": "EventGridSchema"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.EventGrid/systemTopics', 'eg-keyVaultSystemChangeTopic')]",
+        "[resourceId('Microsoft.ServiceBus/namespaces/topics', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName')), 'sb-appconfigurationChangeTopic')]"
+      ]
+    },
+    {
+      "type": "Microsoft.EventGrid/systemTopics/eventSubscriptions",
+      "apiVersion": "2022-06-15",
+      "name": "[format('{0}/{1}', 'eg-systemChangeTopic', 'changeSubscription')]",
+      "properties": {
+        "destination": {
+          "endpointType": "ServiceBusTopic",
+          "properties": {
+            "resourceId": "[resourceId('Microsoft.ServiceBus/namespaces/topics', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName')), 'sb-appconfigurationChangeTopic')]"
+          }
+        },
+        "filter": {
+          "includedEventTypes": [
+            "Microsoft.AppConfiguration.KeyValueModified"
+          ]
+        },
+        "eventDeliverySchema": "EventGridSchema"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.EventGrid/systemTopics', 'eg-systemChangeTopic')]",
+        "[resourceId('Microsoft.ServiceBus/namespaces/topics', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName')), 'sb-appconfigurationChangeTopic')]"
+      ]
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2022-07-01",
+      "name": "[format('{0}-{1}', variables('names').keyVault.name, variables('baseName'))]",
+      "location": "[parameters('location')]",
+      "tags": {},
+      "properties": {
+        "createMode": "default",
+        "enabledForDeployment": false,
+        "enabledForDiskEncryption": false,
+        "enabledForTemplateDeployment": false,
+        "enableSoftDelete": true,
+        "enableRbacAuthorization": true,
+        "sku": {
+          "family": "A",
+          "name": "standard"
+        },
+        "softDeleteRetentionInDays": 7,
+        "tenantId": "[subscription().tenantId]"
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.ServiceBus/namespaces/{0}/topics/{1}', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName')), 'sb-appconfigurationChangeTopic')]",
+      "name": "[guid(resourceId('Microsoft.ServiceBus/namespaces', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName'))), variables('roles')['Azure Service Bus Data Receiver'], resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName'))))]",
+      "properties": {
+        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('roles')['Azure Service Bus Data Receiver'])]",
+        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName'))), '2023-01-31').principalId]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ServiceBus/namespaces', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName')))]",
+        "[resourceId('Microsoft.ServiceBus/namespaces/topics', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName')), 'sb-appconfigurationChangeTopic')]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.ServiceBus/namespaces/{0}/topics/{1}', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName')), 'sb-appconfigurationChangeTopic')]",
+      "name": "[guid(resourceId('Microsoft.ServiceBus/namespaces', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName'))), variables('roles').Contributor, resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName'))))]",
+      "properties": {
+        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('roles').Contributor)]",
+        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName'))), '2023-01-31').principalId]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ServiceBus/namespaces', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName')))]",
+        "[resourceId('Microsoft.ServiceBus/namespaces/topics', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName')), 'sb-appconfigurationChangeTopic')]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02",
+      "name": "[format('{0}-{1}', variables('names').monitor.appinsights, variables('baseName'))]",
+      "location": "[parameters('location')]",
+      "kind": "web",
+      "properties": {
+        "Application_Type": "web",
+        "Request_Source": "rest",
+        "WorkspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', format('{0}-{1}', variables('names').monitor.logAnalyticsWorkspace, variables('baseName')))]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', format('{0}-{1}', variables('names').monitor.logAnalyticsWorkspace, variables('baseName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[format('{0}-{1}', variables('names').monitor.logAnalyticsWorkspace, variables('baseName'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "name": "[parameters('sku')]"
+        },
+        "retentionInDays": 30,
+        "features": {
+          "searchVersion": 1,
+          "legacy": 0,
+          "enableLogAccessUsingOnlyResourcePermissions": true
+        }
+      }
+    },
+    {
+      "copy": {
+        "name": "AddEnvironmentSettings",
+        "count": "[length(parameters('keyValueNames'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[replace(replace(format('Adding-{0}', parameters('keyValueNames')[copyIndex()]), ':', ''), '$', '')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "keyName": {
+            "value": "[parameters('keyValueNames')[copyIndex()]]"
+          },
+          "managedIdentityWithAccessToAppConfiguration": {
+            "value": "[format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName'))]"
+          },
+          "value": {
+            "value": "[parameters('keyValueValues')[copyIndex()]]"
+          },
+          "appConfigName": {
+            "value": "[format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.18.4.5664",
+              "templateHash": "10303628398105011637"
+            }
+          },
+          "parameters": {
+            "appConfigName": {
+              "type": "string"
+            },
+            "keyVaultName": {
+              "type": "string",
+              "defaultValue": "NotASecret"
+            },
+            "contentType": {
+              "type": "string",
+              "defaultValue": "application/json",
+              "allowedValues": [
+                "text/plain",
+                "application/json",
+                "application/xml",
+                "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8"
+              ]
+            },
+            "value": {
+              "type": "string"
+            },
+            "keyName": {
+              "type": "string"
+            },
+            "managedIdentityWithAccessToAppConfiguration": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "$fxv#0": {
+              "initConfig": {
+                "resourceGroupName": "p1",
+                "subscriptionId": "8b67eac7-bf4f-42d7-9342-4da1ff179460",
+                "location": "westeurope"
+              },
+              "roles": {
+                "Contributor": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+                "App Configuration Data Reader": "516239f1-63e1-4d78-a4de-a74fb236a071",
+                "Key Vault Secrets User": "4633458b-17de-408a-b874-0445c86b69e6",
+                "Key Vault Reader": "21090545-7ca7-4776-b22c-e363652d74d2",
+                "Azure Service Bus Data Receiver": "4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0"
+              },
+              "connectionStrings": {
+                "applicationInsights": "InstrumentationKey=66582357-1502-4365-883b-db521307c695;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/",
+                "serviceBus": "Endpoint=sb://proxyservicebus-ttm3.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=JKYF0/t9HprBSH4S3Lu9tfycYTSMeyxE0+ASbG1dSr8=",
+                "appConfiguration": "Endpoint=https://proxyconfiguration-ttm3.azconfig.io;Id=gEUx;Secret=Hb8g5cnuVxGuqRPSwp7OdEnC/4UJ7KwAK4nvS7JxUz0="
+              },
+              "webappEndpoint": "proxy-ttm3.azurewebsites.net",
+              "webappWeatherEndpoint": "proxy-weather-ttm3.azurewebsites.net"
+            },
+            "isSecrect": "[if(not(contains(parameters('keyVaultName'), 'NotASecret')), true(), false())]",
+            "conf": "[variables('$fxv#0')]",
+            "roles": "[variables('conf').roles]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.AppConfiguration/configurationStores/keyValues",
+              "apiVersion": "2022-05-01",
+              "name": "[format('{0}/{1}', parameters('appConfigName'), parameters('keyName'))]",
+              "properties": {
+                "value": "[if(not(variables('isSecrect')), parameters('value'), format('{{\"uri\":\"{0}\"}}', reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-')), '2022-07-01').secretUri))]",
+                "contentType": "[if(not(variables('isSecrect')), parameters('contentType'), 'application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]"
+              ]
+            },
+            {
+              "condition": "[variables('isSecrect')]",
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-07-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]",
+              "properties": {
+                "value": "[parameters('value')]"
+              }
+            },
+            {
+              "condition": "[variables('isSecrect')]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.KeyVault/vaults/{0}/secrets/{1}', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]",
+              "name": "[guid(variables('roles')['Key Vault Secrets User'], resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityWithAccessToAppConfiguration')), resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-')))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roles')['Key Vault Secrets User'])]",
+                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityWithAccessToAppConfiguration')), '2022-01-31-preview').principalId]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]"
+              ]
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.AppConfiguration/configurationStores', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName')))]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "JwtKey",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "keyName": {
+            "value": "Jwt:Secret"
+          },
+          "managedIdentityWithAccessToAppConfiguration": {
+            "value": "[format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName'))]"
+          },
+          "value": {
+            "value": "[parameters('secret')]"
+          },
+          "appConfigName": {
+            "value": "[format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName'))]"
+          },
+          "keyVaultName": {
+            "value": "[format('{0}-{1}', variables('names').keyVault.name, variables('baseName'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.18.4.5664",
+              "templateHash": "10303628398105011637"
+            }
+          },
+          "parameters": {
+            "appConfigName": {
+              "type": "string"
+            },
+            "keyVaultName": {
+              "type": "string",
+              "defaultValue": "NotASecret"
+            },
+            "contentType": {
+              "type": "string",
+              "defaultValue": "application/json",
+              "allowedValues": [
+                "text/plain",
+                "application/json",
+                "application/xml",
+                "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8"
+              ]
+            },
+            "value": {
+              "type": "string"
+            },
+            "keyName": {
+              "type": "string"
+            },
+            "managedIdentityWithAccessToAppConfiguration": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "$fxv#0": {
+              "initConfig": {
+                "resourceGroupName": "p1",
+                "subscriptionId": "8b67eac7-bf4f-42d7-9342-4da1ff179460",
+                "location": "westeurope"
+              },
+              "roles": {
+                "Contributor": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+                "App Configuration Data Reader": "516239f1-63e1-4d78-a4de-a74fb236a071",
+                "Key Vault Secrets User": "4633458b-17de-408a-b874-0445c86b69e6",
+                "Key Vault Reader": "21090545-7ca7-4776-b22c-e363652d74d2",
+                "Azure Service Bus Data Receiver": "4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0"
+              },
+              "connectionStrings": {
+                "applicationInsights": "InstrumentationKey=66582357-1502-4365-883b-db521307c695;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/",
+                "serviceBus": "Endpoint=sb://proxyservicebus-ttm3.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=JKYF0/t9HprBSH4S3Lu9tfycYTSMeyxE0+ASbG1dSr8=",
+                "appConfiguration": "Endpoint=https://proxyconfiguration-ttm3.azconfig.io;Id=gEUx;Secret=Hb8g5cnuVxGuqRPSwp7OdEnC/4UJ7KwAK4nvS7JxUz0="
+              },
+              "webappEndpoint": "proxy-ttm3.azurewebsites.net",
+              "webappWeatherEndpoint": "proxy-weather-ttm3.azurewebsites.net"
+            },
+            "isSecrect": "[if(not(contains(parameters('keyVaultName'), 'NotASecret')), true(), false())]",
+            "conf": "[variables('$fxv#0')]",
+            "roles": "[variables('conf').roles]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.AppConfiguration/configurationStores/keyValues",
+              "apiVersion": "2022-05-01",
+              "name": "[format('{0}/{1}', parameters('appConfigName'), parameters('keyName'))]",
+              "properties": {
+                "value": "[if(not(variables('isSecrect')), parameters('value'), format('{{\"uri\":\"{0}\"}}', reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-')), '2022-07-01').secretUri))]",
+                "contentType": "[if(not(variables('isSecrect')), parameters('contentType'), 'application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]"
+              ]
+            },
+            {
+              "condition": "[variables('isSecrect')]",
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-07-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]",
+              "properties": {
+                "value": "[parameters('value')]"
+              }
+            },
+            {
+              "condition": "[variables('isSecrect')]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.KeyVault/vaults/{0}/secrets/{1}', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]",
+              "name": "[guid(variables('roles')['Key Vault Secrets User'], resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityWithAccessToAppConfiguration')), resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-')))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roles')['Key Vault Secrets User'])]",
+                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityWithAccessToAppConfiguration')), '2022-01-31-preview').principalId]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]"
+              ]
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.AppConfiguration/configurationStores', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName')))]",
+        "[resourceId('Microsoft.KeyVault/vaults', format('{0}-{1}', variables('names').keyVault.name, variables('baseName')))]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "sp",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "keyName": {
+            "value": "ChangeSubscription:UserAssignedManagedIdentityClientId"
+          },
+          "managedIdentityWithAccessToAppConfiguration": {
+            "value": "[format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName'))]"
+          },
+          "value": {
+            "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName'))), '2023-01-31').principalId]"
+          },
+          "appConfigName": {
+            "value": "[format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName'))]"
+          },
+          "contentType": {
+            "value": "text/plain"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.18.4.5664",
+              "templateHash": "10303628398105011637"
+            }
+          },
+          "parameters": {
+            "appConfigName": {
+              "type": "string"
+            },
+            "keyVaultName": {
+              "type": "string",
+              "defaultValue": "NotASecret"
+            },
+            "contentType": {
+              "type": "string",
+              "defaultValue": "application/json",
+              "allowedValues": [
+                "text/plain",
+                "application/json",
+                "application/xml",
+                "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8"
+              ]
+            },
+            "value": {
+              "type": "string"
+            },
+            "keyName": {
+              "type": "string"
+            },
+            "managedIdentityWithAccessToAppConfiguration": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "$fxv#0": {
+              "initConfig": {
+                "resourceGroupName": "p1",
+                "subscriptionId": "8b67eac7-bf4f-42d7-9342-4da1ff179460",
+                "location": "westeurope"
+              },
+              "roles": {
+                "Contributor": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+                "App Configuration Data Reader": "516239f1-63e1-4d78-a4de-a74fb236a071",
+                "Key Vault Secrets User": "4633458b-17de-408a-b874-0445c86b69e6",
+                "Key Vault Reader": "21090545-7ca7-4776-b22c-e363652d74d2",
+                "Azure Service Bus Data Receiver": "4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0"
+              },
+              "connectionStrings": {
+                "applicationInsights": "InstrumentationKey=66582357-1502-4365-883b-db521307c695;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/",
+                "serviceBus": "Endpoint=sb://proxyservicebus-ttm3.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=JKYF0/t9HprBSH4S3Lu9tfycYTSMeyxE0+ASbG1dSr8=",
+                "appConfiguration": "Endpoint=https://proxyconfiguration-ttm3.azconfig.io;Id=gEUx;Secret=Hb8g5cnuVxGuqRPSwp7OdEnC/4UJ7KwAK4nvS7JxUz0="
+              },
+              "webappEndpoint": "proxy-ttm3.azurewebsites.net",
+              "webappWeatherEndpoint": "proxy-weather-ttm3.azurewebsites.net"
+            },
+            "isSecrect": "[if(not(contains(parameters('keyVaultName'), 'NotASecret')), true(), false())]",
+            "conf": "[variables('$fxv#0')]",
+            "roles": "[variables('conf').roles]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.AppConfiguration/configurationStores/keyValues",
+              "apiVersion": "2022-05-01",
+              "name": "[format('{0}/{1}', parameters('appConfigName'), parameters('keyName'))]",
+              "properties": {
+                "value": "[if(not(variables('isSecrect')), parameters('value'), format('{{\"uri\":\"{0}\"}}', reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-')), '2022-07-01').secretUri))]",
+                "contentType": "[if(not(variables('isSecrect')), parameters('contentType'), 'application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]"
+              ]
+            },
+            {
+              "condition": "[variables('isSecrect')]",
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-07-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]",
+              "properties": {
+                "value": "[parameters('value')]"
+              }
+            },
+            {
+              "condition": "[variables('isSecrect')]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.KeyVault/vaults/{0}/secrets/{1}', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]",
+              "name": "[guid(variables('roles')['Key Vault Secrets User'], resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityWithAccessToAppConfiguration')), resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-')))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roles')['Key Vault Secrets User'])]",
+                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityWithAccessToAppConfiguration')), '2022-01-31-preview').principalId]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]"
+              ]
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.AppConfiguration/configurationStores', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName')))]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "StoreAppInsightsConnections",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "keyName": {
+            "value": "API:Settings:Secrets:ConnectionStrings:AppInsights"
+          },
+          "managedIdentityWithAccessToAppConfiguration": {
+            "value": "[format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName'))]"
+          },
+          "value": {
+            "value": "[reference(resourceId('Microsoft.Insights/components', format('{0}-{1}', variables('names').monitor.appinsights, variables('baseName'))), '2020-02-02').ConnectionString]"
+          },
+          "appConfigName": {
+            "value": "[format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName'))]"
+          },
+          "keyVaultName": {
+            "value": "[format('{0}-{1}', variables('names').keyVault.name, variables('baseName'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.18.4.5664",
+              "templateHash": "10303628398105011637"
+            }
+          },
+          "parameters": {
+            "appConfigName": {
+              "type": "string"
+            },
+            "keyVaultName": {
+              "type": "string",
+              "defaultValue": "NotASecret"
+            },
+            "contentType": {
+              "type": "string",
+              "defaultValue": "application/json",
+              "allowedValues": [
+                "text/plain",
+                "application/json",
+                "application/xml",
+                "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8"
+              ]
+            },
+            "value": {
+              "type": "string"
+            },
+            "keyName": {
+              "type": "string"
+            },
+            "managedIdentityWithAccessToAppConfiguration": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "$fxv#0": {
+              "initConfig": {
+                "resourceGroupName": "p1",
+                "subscriptionId": "8b67eac7-bf4f-42d7-9342-4da1ff179460",
+                "location": "westeurope"
+              },
+              "roles": {
+                "Contributor": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+                "App Configuration Data Reader": "516239f1-63e1-4d78-a4de-a74fb236a071",
+                "Key Vault Secrets User": "4633458b-17de-408a-b874-0445c86b69e6",
+                "Key Vault Reader": "21090545-7ca7-4776-b22c-e363652d74d2",
+                "Azure Service Bus Data Receiver": "4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0"
+              },
+              "connectionStrings": {
+                "applicationInsights": "InstrumentationKey=66582357-1502-4365-883b-db521307c695;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/",
+                "serviceBus": "Endpoint=sb://proxyservicebus-ttm3.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=JKYF0/t9HprBSH4S3Lu9tfycYTSMeyxE0+ASbG1dSr8=",
+                "appConfiguration": "Endpoint=https://proxyconfiguration-ttm3.azconfig.io;Id=gEUx;Secret=Hb8g5cnuVxGuqRPSwp7OdEnC/4UJ7KwAK4nvS7JxUz0="
+              },
+              "webappEndpoint": "proxy-ttm3.azurewebsites.net",
+              "webappWeatherEndpoint": "proxy-weather-ttm3.azurewebsites.net"
+            },
+            "isSecrect": "[if(not(contains(parameters('keyVaultName'), 'NotASecret')), true(), false())]",
+            "conf": "[variables('$fxv#0')]",
+            "roles": "[variables('conf').roles]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.AppConfiguration/configurationStores/keyValues",
+              "apiVersion": "2022-05-01",
+              "name": "[format('{0}/{1}', parameters('appConfigName'), parameters('keyName'))]",
+              "properties": {
+                "value": "[if(not(variables('isSecrect')), parameters('value'), format('{{\"uri\":\"{0}\"}}', reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-')), '2022-07-01').secretUri))]",
+                "contentType": "[if(not(variables('isSecrect')), parameters('contentType'), 'application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]"
+              ]
+            },
+            {
+              "condition": "[variables('isSecrect')]",
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-07-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]",
+              "properties": {
+                "value": "[parameters('value')]"
+              }
+            },
+            {
+              "condition": "[variables('isSecrect')]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.KeyVault/vaults/{0}/secrets/{1}', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]",
+              "name": "[guid(variables('roles')['Key Vault Secrets User'], resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityWithAccessToAppConfiguration')), resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-')))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roles')['Key Vault Secrets User'])]",
+                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityWithAccessToAppConfiguration')), '2022-01-31-preview').principalId]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]"
+              ]
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Insights/components', format('{0}-{1}', variables('names').monitor.appinsights, variables('baseName')))]",
+        "[resourceId('Microsoft.AppConfiguration/configurationStores', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName')))]",
+        "[resourceId('Microsoft.KeyVault/vaults', format('{0}-{1}', variables('names').keyVault.name, variables('baseName')))]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "ServiceBusConnectionStringSecret",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "keyName": {
+            "value": "API:Settings:Secrets:ConnectionStrings:ServiceBus"
+          },
+          "managedIdentityWithAccessToAppConfiguration": {
+            "value": "[format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName'))]"
+          },
+          "value": {
+            "value": "[listKeys(variables('serviceBusEndpoint'), '2021-11-01').primaryConnectionString]"
+          },
+          "appConfigName": {
+            "value": "[format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName'))]"
+          },
+          "keyVaultName": {
+            "value": "[format('{0}-{1}', variables('names').keyVault.name, variables('baseName'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.18.4.5664",
+              "templateHash": "10303628398105011637"
+            }
+          },
+          "parameters": {
+            "appConfigName": {
+              "type": "string"
+            },
+            "keyVaultName": {
+              "type": "string",
+              "defaultValue": "NotASecret"
+            },
+            "contentType": {
+              "type": "string",
+              "defaultValue": "application/json",
+              "allowedValues": [
+                "text/plain",
+                "application/json",
+                "application/xml",
+                "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8"
+              ]
+            },
+            "value": {
+              "type": "string"
+            },
+            "keyName": {
+              "type": "string"
+            },
+            "managedIdentityWithAccessToAppConfiguration": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "$fxv#0": {
+              "initConfig": {
+                "resourceGroupName": "p1",
+                "subscriptionId": "8b67eac7-bf4f-42d7-9342-4da1ff179460",
+                "location": "westeurope"
+              },
+              "roles": {
+                "Contributor": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+                "App Configuration Data Reader": "516239f1-63e1-4d78-a4de-a74fb236a071",
+                "Key Vault Secrets User": "4633458b-17de-408a-b874-0445c86b69e6",
+                "Key Vault Reader": "21090545-7ca7-4776-b22c-e363652d74d2",
+                "Azure Service Bus Data Receiver": "4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0"
+              },
+              "connectionStrings": {
+                "applicationInsights": "InstrumentationKey=66582357-1502-4365-883b-db521307c695;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/",
+                "serviceBus": "Endpoint=sb://proxyservicebus-ttm3.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=JKYF0/t9HprBSH4S3Lu9tfycYTSMeyxE0+ASbG1dSr8=",
+                "appConfiguration": "Endpoint=https://proxyconfiguration-ttm3.azconfig.io;Id=gEUx;Secret=Hb8g5cnuVxGuqRPSwp7OdEnC/4UJ7KwAK4nvS7JxUz0="
+              },
+              "webappEndpoint": "proxy-ttm3.azurewebsites.net",
+              "webappWeatherEndpoint": "proxy-weather-ttm3.azurewebsites.net"
+            },
+            "isSecrect": "[if(not(contains(parameters('keyVaultName'), 'NotASecret')), true(), false())]",
+            "conf": "[variables('$fxv#0')]",
+            "roles": "[variables('conf').roles]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.AppConfiguration/configurationStores/keyValues",
+              "apiVersion": "2022-05-01",
+              "name": "[format('{0}/{1}', parameters('appConfigName'), parameters('keyName'))]",
+              "properties": {
+                "value": "[if(not(variables('isSecrect')), parameters('value'), format('{{\"uri\":\"{0}\"}}', reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-')), '2022-07-01').secretUri))]",
+                "contentType": "[if(not(variables('isSecrect')), parameters('contentType'), 'application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]"
+              ]
+            },
+            {
+              "condition": "[variables('isSecrect')]",
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-07-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]",
+              "properties": {
+                "value": "[parameters('value')]"
+              }
+            },
+            {
+              "condition": "[variables('isSecrect')]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.KeyVault/vaults/{0}/secrets/{1}', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]",
+              "name": "[guid(variables('roles')['Key Vault Secrets User'], resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityWithAccessToAppConfiguration')), resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-')))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roles')['Key Vault Secrets User'])]",
+                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityWithAccessToAppConfiguration')), '2022-01-31-preview').principalId]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]"
+              ]
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.AppConfiguration/configurationStores', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName')))]",
+        "[resourceId('Microsoft.KeyVault/vaults', format('{0}-{1}', variables('names').keyVault.name, variables('baseName')))]",
+        "[resourceId('Microsoft.ServiceBus/namespaces', format('{0}-{1}', variables('names').serviceBus.nameSpace, variables('baseName')))]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "AppConfigurationConnectionStringSecret",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "keyName": {
+            "value": "API:Settings:Secrets:ConnectionStrings:AppConfig"
+          },
+          "managedIdentityWithAccessToAppConfiguration": {
+            "value": "[format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName'))]"
+          },
+          "value": {
+            "value": "[filter(listKeys(resourceId('Microsoft.AppConfiguration/configurationStores', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName'))), '2023-03-01').value, lambda('k', equals(lambdaVariables('k').name, 'Primary Read Only')))[0].connectionString]"
+          },
+          "appConfigName": {
+            "value": "[format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName'))]"
+          },
+          "keyVaultName": {
+            "value": "[format('{0}-{1}', variables('names').keyVault.name, variables('baseName'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.18.4.5664",
+              "templateHash": "10303628398105011637"
+            }
+          },
+          "parameters": {
+            "appConfigName": {
+              "type": "string"
+            },
+            "keyVaultName": {
+              "type": "string",
+              "defaultValue": "NotASecret"
+            },
+            "contentType": {
+              "type": "string",
+              "defaultValue": "application/json",
+              "allowedValues": [
+                "text/plain",
+                "application/json",
+                "application/xml",
+                "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8"
+              ]
+            },
+            "value": {
+              "type": "string"
+            },
+            "keyName": {
+              "type": "string"
+            },
+            "managedIdentityWithAccessToAppConfiguration": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "$fxv#0": {
+              "initConfig": {
+                "resourceGroupName": "p1",
+                "subscriptionId": "8b67eac7-bf4f-42d7-9342-4da1ff179460",
+                "location": "westeurope"
+              },
+              "roles": {
+                "Contributor": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+                "App Configuration Data Reader": "516239f1-63e1-4d78-a4de-a74fb236a071",
+                "Key Vault Secrets User": "4633458b-17de-408a-b874-0445c86b69e6",
+                "Key Vault Reader": "21090545-7ca7-4776-b22c-e363652d74d2",
+                "Azure Service Bus Data Receiver": "4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0"
+              },
+              "connectionStrings": {
+                "applicationInsights": "InstrumentationKey=66582357-1502-4365-883b-db521307c695;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/",
+                "serviceBus": "Endpoint=sb://proxyservicebus-ttm3.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=JKYF0/t9HprBSH4S3Lu9tfycYTSMeyxE0+ASbG1dSr8=",
+                "appConfiguration": "Endpoint=https://proxyconfiguration-ttm3.azconfig.io;Id=gEUx;Secret=Hb8g5cnuVxGuqRPSwp7OdEnC/4UJ7KwAK4nvS7JxUz0="
+              },
+              "webappEndpoint": "proxy-ttm3.azurewebsites.net",
+              "webappWeatherEndpoint": "proxy-weather-ttm3.azurewebsites.net"
+            },
+            "isSecrect": "[if(not(contains(parameters('keyVaultName'), 'NotASecret')), true(), false())]",
+            "conf": "[variables('$fxv#0')]",
+            "roles": "[variables('conf').roles]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.AppConfiguration/configurationStores/keyValues",
+              "apiVersion": "2022-05-01",
+              "name": "[format('{0}/{1}', parameters('appConfigName'), parameters('keyName'))]",
+              "properties": {
+                "value": "[if(not(variables('isSecrect')), parameters('value'), format('{{\"uri\":\"{0}\"}}', reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-')), '2022-07-01').secretUri))]",
+                "contentType": "[if(not(variables('isSecrect')), parameters('contentType'), 'application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]"
+              ]
+            },
+            {
+              "condition": "[variables('isSecrect')]",
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-07-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]",
+              "properties": {
+                "value": "[parameters('value')]"
+              }
+            },
+            {
+              "condition": "[variables('isSecrect')]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.KeyVault/vaults/{0}/secrets/{1}', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]",
+              "name": "[guid(variables('roles')['Key Vault Secrets User'], resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityWithAccessToAppConfiguration')), resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-')))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roles')['Key Vault Secrets User'])]",
+                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityWithAccessToAppConfiguration')), '2022-01-31-preview').principalId]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]"
+              ]
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.AppConfiguration/configurationStores', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName')))]",
+        "[resourceId('Microsoft.KeyVault/vaults', format('{0}-{1}', variables('names').keyVault.name, variables('baseName')))]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', variables('names').uamis.appconfigDemo, variables('baseName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "AppConfigurationWroteConnectionStringSecret",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "keyName": {
+            "value": "TenantManagement:Settings:Secrets:ConnectionStrings:AppConfig"
+          },
+          "managedIdentityWithAccessToAppConfiguration": {
+            "value": "[format('controlPlane-{0}', variables('baseName'))]"
+          },
+          "value": {
+            "value": "[filter(listKeys(resourceId('Microsoft.AppConfiguration/configurationStores', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName'))), '2023-03-01').value, lambda('k', equals(lambdaVariables('k').name, 'Primary')))[0].connectionString]"
+          },
+          "appConfigName": {
+            "value": "[format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName'))]"
+          },
+          "keyVaultName": {
+            "value": "[format('{0}-{1}', variables('names').keyVault.name, variables('baseName'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.18.4.5664",
+              "templateHash": "10303628398105011637"
+            }
+          },
+          "parameters": {
+            "appConfigName": {
+              "type": "string"
+            },
+            "keyVaultName": {
+              "type": "string",
+              "defaultValue": "NotASecret"
+            },
+            "contentType": {
+              "type": "string",
+              "defaultValue": "application/json",
+              "allowedValues": [
+                "text/plain",
+                "application/json",
+                "application/xml",
+                "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8"
+              ]
+            },
+            "value": {
+              "type": "string"
+            },
+            "keyName": {
+              "type": "string"
+            },
+            "managedIdentityWithAccessToAppConfiguration": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "$fxv#0": {
+              "initConfig": {
+                "resourceGroupName": "p1",
+                "subscriptionId": "8b67eac7-bf4f-42d7-9342-4da1ff179460",
+                "location": "westeurope"
+              },
+              "roles": {
+                "Contributor": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+                "App Configuration Data Reader": "516239f1-63e1-4d78-a4de-a74fb236a071",
+                "Key Vault Secrets User": "4633458b-17de-408a-b874-0445c86b69e6",
+                "Key Vault Reader": "21090545-7ca7-4776-b22c-e363652d74d2",
+                "Azure Service Bus Data Receiver": "4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0"
+              },
+              "connectionStrings": {
+                "applicationInsights": "InstrumentationKey=66582357-1502-4365-883b-db521307c695;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/",
+                "serviceBus": "Endpoint=sb://proxyservicebus-ttm3.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=JKYF0/t9HprBSH4S3Lu9tfycYTSMeyxE0+ASbG1dSr8=",
+                "appConfiguration": "Endpoint=https://proxyconfiguration-ttm3.azconfig.io;Id=gEUx;Secret=Hb8g5cnuVxGuqRPSwp7OdEnC/4UJ7KwAK4nvS7JxUz0="
+              },
+              "webappEndpoint": "proxy-ttm3.azurewebsites.net",
+              "webappWeatherEndpoint": "proxy-weather-ttm3.azurewebsites.net"
+            },
+            "isSecrect": "[if(not(contains(parameters('keyVaultName'), 'NotASecret')), true(), false())]",
+            "conf": "[variables('$fxv#0')]",
+            "roles": "[variables('conf').roles]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.AppConfiguration/configurationStores/keyValues",
+              "apiVersion": "2022-05-01",
+              "name": "[format('{0}/{1}', parameters('appConfigName'), parameters('keyName'))]",
+              "properties": {
+                "value": "[if(not(variables('isSecrect')), parameters('value'), format('{{\"uri\":\"{0}\"}}', reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-')), '2022-07-01').secretUri))]",
+                "contentType": "[if(not(variables('isSecrect')), parameters('contentType'), 'application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]"
+              ]
+            },
+            {
+              "condition": "[variables('isSecrect')]",
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-07-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]",
+              "properties": {
+                "value": "[parameters('value')]"
+              }
+            },
+            {
+              "condition": "[variables('isSecrect')]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.KeyVault/vaults/{0}/secrets/{1}', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]",
+              "name": "[guid(variables('roles')['Key Vault Secrets User'], resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityWithAccessToAppConfiguration')), resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-')))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roles')['Key Vault Secrets User'])]",
+                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityWithAccessToAppConfiguration')), '2022-01-31-preview').principalId]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), replace(parameters('keyName'), ':', '-'))]"
+              ]
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.AppConfiguration/configurationStores', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName')))]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('controlPlane-{0}', variables('baseName')))]",
+        "[resourceId('Microsoft.KeyVault/vaults', format('{0}-{1}', variables('names').keyVault.name, variables('baseName')))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "applicationInsights_ConnectionString": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Insights/components', format('{0}-{1}', variables('names').monitor.appinsights, variables('baseName'))), '2020-02-02').ConnectionString]"
+    },
+    "changeSubscription_ServiceBusConnectionString": {
+      "type": "string",
+      "value": "[listKeys(variables('serviceBusEndpoint'), '2021-11-01').primaryConnectionString]"
+    },
+    "connectionStrings_AppConfig": {
+      "type": "string",
+      "value": "[filter(listKeys(resourceId('Microsoft.AppConfiguration/configurationStores', format('{0}-{1}', variables('names').appConfiguration.name, variables('baseName'))), '2023-03-01').value, lambda('k', equals(lambdaVariables('k').name, 'Primary Read Only')))[0].connectionString]"
+    },
+    "webappEndpoint": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Web/sites', format('{0}-{1}', variables('names').website.webapp, variables('baseName'))), '2022-09-01').defaultHostName]"
+    },
+    "webappWeatherEndpoint": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Web/sites', format('{0}-weather-{1}', variables('names').website.webapp, variables('baseName'))), '2022-03-01').defaultHostName]"
+    }
+  }
+}

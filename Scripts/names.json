@@ -1,0 +1,36 @@
+{
+    "appConfiguration": {
+        "name":"ProxyConfiguration"
+    },
+    "uamis": {
+        "appconfigDemo": "ProxyConfigurationUAMI"
+    },
+    "website": {
+        "appServiceplan": "ProxyServicePlan",
+        "webapp": "Proxy"
+    },
+    "features": {
+        "magic": {
+            "name": "DoMagic",
+            "default" : "false"
+        },
+        "showDebugView": {
+            "name": "ShowDebugView",
+            "default" : "false"
+        },
+        "autoUpdateLatestVersionSecrets" : {
+            "name": "AutoUpdateLatestVersionSecrets",
+            "default" : "true"
+        }
+    },
+    "monitor": {
+        "appinsights": "Appinsights",
+        "logAnalyticsWorkspace" :"LogAnalyticsWorkspace"
+    },
+    "serviceBus" : {
+        "nameSpace" : "ProxyServicebus"
+    },
+    "keyVault" : {
+        "name" : "kvProxySample"
+    }
+}

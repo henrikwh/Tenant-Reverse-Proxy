@@ -1,0 +1,24 @@
+{
+  "Logging": {
+    "IncludeScopes": true,
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning",
+      "Proxy": "Trace",
+      "WeatherApi": "Trace",
+      "Shared": "Trace",
+      "Yarp.ReverseProxy": "Trace"
+  },
+    "ApplicationInsights": {
+      "IncludeScopes": true,
+      "LogLevel": {
+        "Default": "Information",
+        "Microsoft": "Warning",
+        "Proxy": "Trace",
+        "WeatherApi": "Trace",
+        "Shared": "Trace",
+        "Yarp ": "Trace"
+      }
+    }
+  }
+}

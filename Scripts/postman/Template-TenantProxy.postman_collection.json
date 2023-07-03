@@ -1,0 +1,202 @@
+{
+	"info": {
+		"name": "TenantProxy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3348652"
+	},
+	"item": [
+		{
+			"name": "Dataplane",
+			"item": [
+				{
+					"name": "Debug",
+					"item": [
+						{
+							"name": "ProxyConfig",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/Config/GetproxyConfigDump",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Config",
+										"GetproxyConfigDump"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Diag",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/diag",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"diag"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Azure",
+					"item": [
+						{
+							"name": "GetWeatherForTenant",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/v1.0/WeatherForecast",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v1.0",
+										"WeatherForecast"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Localhost",
+					"item": [
+						{
+							"name": "GetWeatherForTenant",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localurl}}/api/v1.0/WeatherForecast",
+									"host": [
+										"{{localurl}}"
+									],
+									"path": [
+										"api",
+										"v1.0",
+										"WeatherForecast"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "useBrowser",
+				"value": true,
+				"type": "boolean"
+			},
+			{
+				"key": "grant_type",
+				"value": "implicit",
+				"type": "string"
+			},
+			{
+				"key": "scope",
+				"value": "api://{{clientId}}/{{scope}}",
+				"type": "string"
+			},
+			{
+				"key": "clientSecret",
+				"value": "{{clientSecret}}",
+				"type": "string"
+			},
+			{
+				"key": "clientId",
+				"value": "{{clientId}}",
+				"type": "string"
+			},
+			{
+				"key": "refreshRequestParams",
+				"value": [],
+				"type": "any"
+			},
+			{
+				"key": "tokenRequestParams",
+				"value": [],
+				"type": "any"
+			},
+			{
+				"key": "authRequestParams",
+				"value": [],
+				"type": "any"
+			},
+			{
+				"key": "tokenName",
+				"value": "test",
+				"type": "string"
+			},
+			{
+				"key": "challengeAlgorithm",
+				"value": "S256",
+				"type": "string"
+			},
+			{
+				"key": "redirect_uri",
+				"value": "https://localhost:7001/signin-oidc",
+				"type": "string"
+			},
+			{
+				"key": "authUrl",
+				"value": "https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			},
+			{
+				"key": "client_authentication",
+				"value": "header",
+				"type": "string"
+			},
+			{
+				"key": "accessTokenUrl",
+				"value": "https://login.microsoftonline.com/organizations/oauth2/v2.0/token",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
