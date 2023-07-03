@@ -1,0 +1,8 @@
+[
+    {
+        "Tid": "GUID",
+        "Destination": "https://SOMEURLK.azurewebsites.net",
+        "Alias": "SomeAlias",
+        "State":"Enabled"
+    }
+]
