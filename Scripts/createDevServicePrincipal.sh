@@ -1,4 +1,5 @@
 #!/bin/bash
+
 source ./helpers.sh
 
 basedir="$( dirname "$( readlink -f "$0" )" )"
@@ -11,21 +12,24 @@ if [ ! -f "$CONFIG_FILE" ]; then
     cp ./config-template.json "${CONFIG_FILE}"
 fi
 
-servicePrincipalName="ProxyDeveloment"
+
 
 jsonpath=".initConfig.resourceGroupName"
 resourceGroupName="$( get-value  "${jsonpath}" )"
+servicePrincipalName="ProxyDeveloment-$resourceGroupName"
+echo $servicePrincipalName
+
 jsonpath=".initConfig.subscriptionId"
 subscriptionId="$( get-value  "${jsonpath}" )"
 
 
 
-az group list --query "[].{name:name}" --output tsv
+#az group list --query "[].{name:name}" --output tsv
 
-az account list --query "[].{name:name, id:id}" --output tsv
+#az account list --query "[].{name:name, id:id}" --output tsv
 
 
-sp=$(az ad sp create-for-rbac -n DevelopmentCredentials |jq .)
+#sp=$(az ad sp create-for-rbac -n DevelopmentCredentials |jq .)
 
 
 scope="/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName"
@@ -41,15 +45,27 @@ put-value      '.Development.ServicePrincipal.Secret' "$(echo "${sp}" | jq -r '.
 put-value      '.Development.ServicePrincipal.TenantId' "$(echo "${sp}" | jq -r '.tenant' )" 
 put-value      '.Development.ServicePrincipal.DisplayName' "$(echo "${sp}" | jq -r '.displayName' )" 
 
-asignee="$(echo "${sp}" | jq -r '.appId' )"
-echo $asignee
+assignee="$(echo "${sp}" | jq -r '.appId' )"
+echo $assignee
+
 
 
 
 #todo: Create loop over permissions already in config.json, roles
 
+
+
+
+
+
+
 az role assignment create --assignee $assignee \
     --role  'b24988ac-6180-42a0-ab88-20f7382dd24c' \
+    --scope $scope
+
+
+az role assignment create --assignee $assignee \
+    --role  '5ae67dd6-50cb-40e7-96ff-dc2bfa4b606b' \
     --scope $scope
 
 

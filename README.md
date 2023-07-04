@@ -9,22 +9,26 @@ Tenant routing rules, claims processing, and authentication protocol translation
 
 A reverse proxy or gateway can solve these and other challenges, as it sits between client devices and one or more backend servers, forwarding client requests to servers and then returning the server's response back to the client. The [Gateway Routing pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/gateway-routing) speaks to and addresses these challenges.
 
-Current sample uses [YARP proxy](https://microsoft.github.io/reverse-proxy/articles/getting-started.html), as the reverse proxy implementation. Services like Application Gateway and API Management, provide much of the same, and more, functionality. These existing PaaS services do not offer token-based routing or claims transformation, like adding claims or mapping to other auth protocols. YARP provides that flexibility, as the pipeline is fully extendable. 
+The current sample uses [YARP proxy](https://microsoft.github.io/reverse-proxy/articles/getting-started.html), as the reverse proxy implementation. Services like Application Gateway and API Management, provide much of the same, and more, functionality. These existing PaaS services do not offer token-based routing or claims transformation, like adding claims or mapping to other auth protocols. YARP provides that flexibility, as the pipeline is fully extendable. 
 
 ### Building and deploying the sample
 
 Install scripts are tested on Ubuntu on WSL.
 
-*Main principle for the scripts* is to store variables in `config.json` once scripts run. That will result in specific deployment parameters, which is used in bicep to provision and configure. `config.json` is also used directly by asp.net core configuration, if the sample is running locally.
+*Main principle for the scripts* is to store variables in `config.json` once scripts run. That will result in specific deployment parameters, which are used in bicep to provision and configure. `config.json` is also used directly by ASP.NET core configuration provider, if the sample is running locally.
 
 1. Clone the repository
+
 2. Go to the scripts folder
+
 3. Optional: run `./preReqs.sh` to install needed prerequisites. 
    For manual installation of the prerequisites: `apt install jq zip azure-cli dotnet-sdk-7.0`
+   
 4. run `./aadApp.sh` to create application registration in AAD. This will create a multitenant AAD app.
-5. run `./provision.sh` to provision Azure resources, using bicep.
-6. run `./deploy.sh` to build solution and deploy the solution
-7. run `./addCurrentTenantToRepository.sh`, this will create a registration which will route your tenant the the weather api installed for testing 
+
+5. run `./provision.sh` to provision Azure resources, using Bicep.
+
+7. run `./addCurrentTenantToRepository.sh`, this will create a registration that will route your tenant the weather API installed for testing 
    routing information is stored in App Configuration under `TenantDirectory:Tenants$Production` with this format:
 
     ```json
@@ -37,16 +41,17 @@ Install scripts are tested on Ubuntu on WSL.
         }
     ]
     ```
+8. run `./deploy.sh` to build the solution and deploy the solution    
 
 #### Setting up Postman to call the APIs
 
-An Postman environment is generated to help setup the authentication and to make the request against the proxy.
+A Postman environment is generated to help setup the authentication and to make the request against the proxy.
 
-1) In scripts folder, run `createPostmanEnvironment.sh`
-2) Open Postman and import the generated files `TenantProxy-dev.postman_environment.json` and `TenantProxy.postman_collection.json`
+1) In the scripts folder, run `createPostmanEnvironment.sh`, this will generate an environment file and copy the sample collection.
+2) Open Postman and import the generated files `TenantProxy-{current resourcegroup name}.postman_environment.json` and `TenantProxy.postman_collection.json`
    ![image-20230629114232652](https://hwhfta.blob.core.windows.net/typoraimages/2023%2F06%2F29%2F11%2F42%2Fimage-20230629114232652----S0CFV86241SW42FCY2J9M8XZKW.png)
-3) In postman select the imported environment, to make sure the right variables are used.
-4) Get a new access token, and press "Use Token"
+3) In Postman select the imported environment, to make sure the right variables are used. The environment name contains the resourcegroup name for the deployment
+4) Get a new access token, and press "Use Token". This will use the environment which contains the client id, scope etc.
     ![image-20230629115606224](https://hwhfta.blob.core.windows.net/typoraimages/2023%2F06%2F29%2F11%2F56%2Fimage-20230629115606224----ESDPZN5KTFA75AW4JF257ZSSDG.png)
 5) Call the API, using the token
     ![image-20230629115216440](https://hwhfta.blob.core.windows.net/typoraimages/2023%2F06%2F29%2F11%2F52%2Fimage-20230629115216440----Y4NA41CBGY64GE4EHRA5Q1CFN8.png)
@@ -56,9 +61,10 @@ An Postman environment is generated to help setup the authentication and to make
 
 From the scripts folder do the following:
 
-1) Make sure that the above setup steps has been performed, to provision resources on azure
-2) From scripts folder run `createDevServicePrincipal.sh`. This will create a service principal with permissions identical to the managed identity. Values are stored in `config.json` and read as part of the startup.
-3) If testing with postman, use the request in the localhost folder. 
+1) Make sure that the above setup steps have been performed, to provision resources on Azure
+2) From the scripts folder run `createDevServicePrincipal.sh`. This will create a service principal with permissions identical to the managed identity. Values are stored in `config.json` and read as part of the startup.
+3) For startup projects, select multiple and select Proxy and WeatherApi.
+4) If testing with Postman, use the request stored in the localhost folder
 
 ## Main components
 
@@ -70,7 +76,7 @@ The solution consists of the following:
 
 1. Backend API, which tenants are routed to. This is the weather API, but *configured to authorize using the token issued from the proxy*. 
 
-1. A tenant management service (API). This acts as the interface to update the tenant repository. Not deployed with scripts above.
+1. A tenant management service (API) with OpenAPI exposed. This acts as the interface to update the tenant repository. Not deployed with scripts above.
 
 ## Tenant routing
 
@@ -78,7 +84,7 @@ The end-to-end flow for performing a request from a client (tenant) to a designa
 
 1. Proxy receives an authorized request
 
-2. Proxy inspects the bearer token and extracts claim needed. In this case only `http://schemas.microsoft.com/identity/claims/tenantid` claim is used
+2. Proxy inspects the bearer token and extracts claims needed. In this case, only `http://schemas.microsoft.com/identity/claims/tenantid` claim is used
 
 3. Proxy uses tenant id to retrieve tenant information in Tenant Repository. Tenant Repository contains hosting Uri and state of the tenant (enabled or disabled)
 
