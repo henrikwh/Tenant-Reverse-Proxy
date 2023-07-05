@@ -52,13 +52,6 @@ echo $assignee
 
 
 #todo: Create loop over permissions already in config.json, roles
-
-
-
-
-
-
-
 az role assignment create --assignee $assignee \
     --role  'b24988ac-6180-42a0-ab88-20f7382dd24c' \
     --scope $scope
@@ -84,11 +77,6 @@ az role assignment create --assignee $assignee \
 
 az role assignment create --assignee $assignee \
     --role  '4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0' \
-    --scope $scope
-
-
-az role assignment create --assignee $assignee \
-    --role  '5ae67dd6-50cb-40e7-96ff-dc2bfa4b606b' \
     --scope $scope
 
 
