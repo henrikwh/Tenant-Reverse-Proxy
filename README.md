@@ -41,7 +41,7 @@ The end-to-end flow for performing a request from a client (tenant) to a designa
 
 Sequence diagram below illustrates the flow.
 
-![image-20230705093641819](Docs/Images/TenantRouting.png)
+![Tenant Routing](Docs/Images/TenantRouting.png)
 
 ## Tenant management
 
@@ -53,9 +53,9 @@ The sample includes a simple management abstraction that allows for configuring 
 
 Here changes to the routing configuration are pushed to subscribing proxies. 
 
-###### The high level sequence diagram for calling the backend looks like:
+The high level sequence diagram for calling the backend looks like:
 
-![image-20230705094829274](Docs/Images/DataAndControlPlane.png)
+![Data and control plane](Docs/Images/DataAndControlPlane.png)
 
 
 Some key considerations are that the proxy requires hosting, maintenance, and operations and that the proxy is on the critical path. Application Gateway or API Management are hosted services and takes these responsibilities. Besides that, adding a proxy, or gateway, have a cost and adds an additional layer of processing which will have some performance impact.  Networking configuration has not been included in this sample, where for most cases, deployments would be performed into separate subnets and a web application firewall would front the proxy. 
@@ -79,7 +79,7 @@ union requests,traces,dependencies, exceptions
 | order by timestamp asc  		
 ```
 
-![Distributed tracing](Docs/Images/2023%2F06%2F13%2F14%2F28%2FDistributedTracing----ATZCD14VKBAZHJ1ZHJMHQSQNCR.png)
+![Distributed tracing](Docs/Images/KQLResult.png)
 
 Requests, traces, and dependencies are logged. Above shows the request to the proxy, trace for the proxy (Proxying to..), the dependency trace, the request to the weather API, and finally the trace response. 
 
@@ -87,7 +87,7 @@ Requests, traces, and dependencies are logged. Above shows the request to the pr
 
 The application map shows the communication between services. The obvious are calls from proxy and downstream to weather API. There are also a few other dependencies shown, that illustrate how the service operates:
 
-<img src="Docs/Images/2023%2F06%2F23%2F11%2F56%2Fimage-20230623115634652----VNYYS0RZAWXWXG4NF6FW282HNC.png" alt="image-20230623115634652" style="zoom:50%;" />
+<img src="Docs/Images/ApplicationMap.png" alt="Application map" style="zoom:50%;" />
 
 * `127.0.0.1:*` - looking into that reveals `GET 127.0.0.1:41793/msi/token/`. This is the service getting a token for the managed identity used to connect other services
 * `proxyservicebus-*` is the subscription to the Service Bus topic which nodes subscribe to, to get notified of configuration changes
@@ -131,12 +131,12 @@ A Postman environment is generated to help setup the authentication and to make 
 
 1) In the scripts folder, run `createPostmanEnvironment.sh`, this will generate an environment file and copy the sample collection.
 2) Open Postman and import the generated files `TenantProxy-dev.postman_environment.json` and `TenantProxy.postman_collection.json`
-   ![image-20230629114232652](Docs/Images/2023%2F06%2F29%2F11%2F42%2Fimage-20230629114232652----S0CFV86241SW42FCY2J9M8XZKW.png)
+   ![image-20230629114232652](Docs/Images/PostmanImportEnvironment.png)
 3) In Postman select the imported environment, to make sure the right variables are used. The environment name contains the resourcegroup name for the deployment
 4) Get a new access token, and press "Use Token". This will use the environment which contains the client id, scope etc.
-    ![image-20230629115606224](Docs/Images/2023%2F06%2F29%2F11%2F56%2Fimage-20230629115606224----ESDPZN5KTFA75AW4JF257ZSSDG.png)
+    ![image-20230629115606224](Docs/Images/PostmanGetToken.png)
 5) Call the API, using the token
-    ![image-20230629115216440](Docs/Images/2023%2F06%2F29%2F11%2F52%2Fimage-20230629115216440----Y4NA41CBGY64GE4EHRA5Q1CFN8.png)
+    ![image-20230629115216440](Docs/Images/PostmanCallWeatherAPI.png)
 6) Enjoy the weather, served through the proxy, by the backend API the tenant is routed to
 
 #### Running locally
